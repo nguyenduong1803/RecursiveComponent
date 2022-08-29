@@ -5,7 +5,12 @@
       <form class="form">
         <div class="formInput">
           <label class="labelInput" for="name">Tên phòng ban</label>
-          <input v-model="department" id="name" type="text" placeholder="Tên phòng ban..." />
+          <input
+            v-model="department"
+            id="name"
+            type="text"
+            placeholder="Tên phòng ban..."
+          />
         </div>
         <div class="formInput">
           <label class="labelInput" for="id">Mã phòng ban</label>
@@ -27,18 +32,23 @@
 
 <script>
 export default {
-  data(){
+  data() {
     return {
-      department:"",
-      departmentId:""
-    }
+      department: "",
+      departmentId: "",
+    };
   },
   methods: {
     handleClose() {
-      this.$emit("onSendValue", {type:"add/close"});
+      this.$emit("onSendValue", { type: "add/close" });
     },
     handleSubmitform() {
-      this.$emit("onSendValue", {type:"add/department",name:this.department,id:this.departmentId});
+      this.$emit("onSendValue", {
+        type: "add/department",
+        name: this.department,
+        id: this.departmentId,
+        children:[]
+      });
     },
   },
   props: {

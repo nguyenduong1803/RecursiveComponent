@@ -19,26 +19,15 @@ import ListRecursive from "./ListRecursive.vue";
 export default {
   methods: {
     handleAction(value) {
-      console.log("provider: ", value);
       switch (value.type) {
         case "add":
           break;
         case "delete":
-          this.treeArray.children;
-          if (this.treeArray.children && this.treeArray.children.length > 0) {
-            this.treeArray.children.forEach((item, index) => {
-              if (item.id === value.id) {
-                this.treeArray.splice(index, 1);
-              }
-            });
-          } else {
-            this.treeArray.forEach((item, index) => {
-              if (item.id === value.id) {
-                this.treeArray.splice(index, 1);
-              }
-            });
-          }
-
+          this.treeArray.forEach((item, index) => {
+            if (item.id === value.id) {
+              this.treeArray.splice(index, 1);
+            }
+          });
           break;
 
         default:
@@ -87,7 +76,7 @@ export default {
               children: [
                 {
                   id: "6",
-                  departmentId: "DPM0-5",
+                  departmentId: "DPM0-6",
                   name: "Lorem ipsum dolor,orem ipsum dolororem ipsum dolor",
                   children: [],
                   open: false,
@@ -99,17 +88,17 @@ export default {
             },
             {
               id: "7",
-              departmentId: "DPM0-6",
+              departmentId: "DPM0-7",
               name: "Lorem ipsum dolor,orem ipsum dolororem ipsum dolor",
               children: [
                 {
                   id: "8",
-                  departmentId: "DPM0-7",
+                  departmentId: "DPM0-8",
                   name: "Lorem ipsum dolor,",
                   children: [
                     {
                       id: "9",
-                      departmentId: "DPM0-8",
+                      departmentId: "DPM0-9",
                       name: "Lorem ipsum dolor,",
                       children: [],
                       open: false,

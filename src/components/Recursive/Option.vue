@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-if="toggle" class="option">
+    <div :style="{top:coordinate.y+'px',left:coordinate.x+'px'}" class="option">
       <ul class="listOption">
-        <li @click="handleAction" class="optionItem">Thêm phòng ban</li>
+        <li @click="action=true" class="optionItem">Thêm phòng ban</li>
         <li @click="handleDelete" class="optionItem">Xóa phòng ban</li>
-        <li class="optionItem">Nâng level</li>
-        <li class="optionItem">Giảm level</li>
+        <li @click="handleLevelup" class="optionItem">Nâng level</li>
+        <li v-if="length>1" @click="handleLevelDown" class="optionItem">Giảm level</li>
       </ul>
     </div>
     <Modal :action="action" @onSendValue="handleSendValue" />
@@ -21,10 +21,6 @@ export default {
     };
   },
   methods: {
-    handleAction() {
-      this.$emit("onAdd", "add/close");
-      this.action = true;
-    },
     handleDelete() {
       this.$emit("onAdd", {type:'delete/delete'});
     },
@@ -32,6 +28,12 @@ export default {
       this.action = false;
       this.$emit("onAdd", value);
     },
+    handleLevelup(){
+      this.$emit("onAdd", {type:'level/up'});
+    },
+    handleLevelDown(){
+      this.$emit("onAdd", {type:'level/down'});
+    }
   },
   props: {
     toggle: {
@@ -43,6 +45,13 @@ export default {
       default: {},
       required: true,
     },
+    coordinate:{
+      type:Object,
+      default: {},
+    },
+    length:{
+      Number
+    }
   },
   components: {
     Modal,
@@ -52,10 +61,9 @@ export default {
 
 <style  scoped>
 .option {
-  position: absolute;
+  position: fixed;
   width: 150px;
-  top: -20%;
-  right: -12px;
+ 
   box-shadow: 2px 4px 4px rgba(204, 204, 204, 0.5);
   border-radius: 4px;
   z-index: 20;
