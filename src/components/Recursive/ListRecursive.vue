@@ -39,6 +39,7 @@ export default {
         });
       } else if (value.type === "level/up") {
         this.$emit("onActionList", value);
+        
       } else if (value.type === "level/down") {
         this.$emit("onActionList", value);
       }
