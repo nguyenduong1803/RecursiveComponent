@@ -11,11 +11,16 @@
         <p class="content">{{ treeItem.name }}</p>
       </div>
     </div>
-
-    <Option @onAdd="handleAction" :treeItem="treeItem" :toggle="toggleOption" />
+    <Option
+      @onAdd="handleAction"
+      :coordinate="coordinate"
+      :treeItem="treeItem"
+      v-if="toggleOption"
+      :length="length"
+    />
     <div
       @contextmenu.prevent
-      @click="handleHidden"
+      @click="toggleOption = false"
       v-if="toggleOption"
       class="overlay"
     ></div>
@@ -29,6 +34,8 @@ export default {
   data() {
     return {
       toggleOption: false,
+      coordinate: {},
+      floor: this.treeItem.floor,
     };
   },
   methods: {
@@ -37,11 +44,10 @@ export default {
         this.treeItem.children.forEach((item) => (item.open = !item.open));
       }
     },
-    handleRightMouse() {
+    handleRightMouse(e) {
       this.toggleOption = true;
-    },
-    handleHidden() {
-      this.toggleOption = false;
+      this.coordinate.x = e.clientX;
+      this.coordinate.y = e.clientY;
     },
     // action choose option
     handleAction(value) {
@@ -49,20 +55,46 @@ export default {
       if (value.type === "add/close") {
         this.toggleOption = false;
       } else if (value.type === "add/department") {
-        const id = uuidv4();
-        this.treeItem.children.push({
-          id,
-          departmentId: value.id,
-          name: value.name,
-          children: [],
-          open: false,
-          floor: Number(this.treeItem.floor) + 1,
-        });
-        console.log(this.treeItem)
+        this.handleAddTree(value);
         this.toggleOption = false;
-      }else if(value.type==="delete/delete"){
-        this.$emit("onDelete",this.treeItem)
+      } else if (value.type === "delete/delete") {
+        this.$emit("onAddEvent", { type: value.type, tree: this.treeItem });
+      } else if (value.type === "level/up") {
+        this.$emit("onAddEvent", { type: value.type, tree: this.treeItem });
+      } else if (value.type === "level/down") {
+        // this.handleAddTree({
+        //   name: this.treeItem.name,
+        //   id: this.treeItem.departmentId,
+        //   children: [...this.treeItem.children],
+        // });
+        const tree = {
+          id: this.treeItem.id,
+          departmentId: this.treeItem.departmentId,
+          name: this.treeItem.name,
+          children: [...this.treeItem.children],
+          open: !this.treeItem.open,
+          floor: Number(this.treeItem.floor) + 1,
+        };
+        // (this.floor = Number(this.floor) + 1),
+        this.$emit("onAddEvent", {
+          type: value.type,
+          id: this.treeItem.id,
+          tree,
+        });
       }
+    },
+    handleAddTree(value) {
+      const id = uuidv4();
+      this.treeItem.children.push({
+        id,
+        departmentId: value.id,
+        name: value.name,
+        children: value.children,
+        open: true,
+        floor: Number(this.treeItem.floor) + 1,
+      });
+      (this.floor = Number(this.treeItem.floor) + 1),
+        this.treeItem.children.forEach((item) => (item.open = true));
     },
   },
 
@@ -72,7 +104,20 @@ export default {
       default: {},
       required: true,
     },
-   
+    length: {
+      type: Number,
+    },
+  
+  },
+  watch: {
+    floor(newValue, old) {
+      console.log(this.treeItem);
+      this.treeItem.children.forEach((item) => {
+        item.floor = item.floor + 1;
+      });
+      console.log(newValue);
+      console.log("old: ", old);
+    },
   },
   components: {
     Option,
